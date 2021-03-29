@@ -25,7 +25,7 @@ exports.setPath = async function( imagePath, userid ) {
     console.log( `Request to update user image path...` );
     const conn = await db.getPool().getConnection();
     const query = 'update user set image_path = ? where id = ?';
-    const [ result ] = await conn.query( query, [ userid ]);
+    const [ result ] = await conn.query( query, [ imagePath, userid ]);
     conn.release();
     return result;
 };
