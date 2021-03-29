@@ -163,13 +163,13 @@ exports.change = async function (req, res) {
             res.status( 404 )
                 .send("User not found");
 
-        } else if (authToken !== user[0].auth_token) {
-            res.status(403)
-                .send("Cannot change another users details");
-
         } else if (authToken == null) {
             res.status(401)
                 .send("No auth token");
+
+        } else if (authToken !== user[0].auth_token) {
+            res.status(403)
+                .send("Cannot change another users details");
 
         } else {
 
