@@ -4,7 +4,7 @@ const crypto = require('crypto')
 
 exports.insert = async function( email, firstName, lastName, password ) {
 
-    const passwordHash = await bcrypt.hash(password, 10)
+    const passwordHash = await bcrypt.hash(password, 10);
 
     console.log( `Request to insert user into the database...` );
     const conn = await db.getPool().getConnection();
@@ -69,9 +69,6 @@ exports.getFromId = async function( userid ) {
 
 exports.updateEmail = async function( email, userid ) {
 
-    console.log(email);
-    console.log(userid)
-
     console.log( `Request to get user details from id...` );
     const conn = await db.getPool().getConnection();
     const query = 'update user set email = ? where id = ?';
@@ -102,7 +99,7 @@ exports.updateLastName = async function( lastName, userid ) {
 
 exports.updatePassword = async function( password, userid ) {
 
-    const passwordHash = await bcrypt.hash(password, 10)
+    const passwordHash = await bcrypt.hash(password, 10);
 
     console.log( `Request to get user details from id...` );
     const conn = await db.getPool().getConnection();
