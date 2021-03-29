@@ -8,7 +8,7 @@ exports.register = async function (req, res) {
     const lastName = req.body.lastName
     const password = req.body.password
 
-    if (email == null || firstName == null || lastName == null || password == null || firstName == "" || lastName == "" || password == "") {
+    if (email == null || firstName == null || lastName == null || password == null || firstName === "" || lastName === "" || password === "") {
 
         res.status( 400 )
             .send();
@@ -21,7 +21,7 @@ exports.register = async function (req, res) {
         try {
             const possibleResult = await users.getFromEmail(email);
 
-            if (possibleResult.length != 0)  {
+            if (possibleResult.length !== 0)  {
                 res.status( 400 )
                     .send( 'Error email already in use' )
             } else {
@@ -54,7 +54,7 @@ exports.login = async function (req, res) {
         try {
             const possibleResult = await users.getFromEmail(email);
 
-            if (possibleResult.length == 0)  {
+            if (possibleResult.length === 0)  {
                 res.status( 400 )
                     .send( 'Error email is not registered' )
             } else {
@@ -93,7 +93,7 @@ exports.logout = async function (req, res) {
 
         const result = await users.checkAuth(authToken);
 
-        if (result.length == 0) {
+        if (result.length === 0) {
             res.status( 401 )
                 .send( 'Incorrect or no auth token' );
         } else {
@@ -123,14 +123,14 @@ exports.retrieve = async function (req, res) {
 
         const user = await users.getFromId(userid);
 
-        if (user.length == 0) {
+        if (user.length === 0) {
             res.status( 404 )
                 .send("User not found");
         } else {
 
             const authToken = req.header('X-Authorization');
 
-            if (authToken == user[0].auth_token) {
+            if (authToken === user[0].auth_token) {
                 res.status( 200 )
                     .send({firstName: user[0].first_name, lastName: user[0].last_name, email: user[0].email});
             } else {
@@ -159,10 +159,10 @@ exports.change = async function (req, res) {
 
         const authToken = req.header('X-Authorization');
 
-        if (authToken != user[0].auth_token) {
+        if (authToken !== user[0].auth_token) {
             res.status(401)
                 .send("Cannot change another users details");
-        } else if (user.length == 0) {
+        } else if (user.length === 0) {
             res.status( 404 )
                 .send("User not found");
         } else {
@@ -177,7 +177,7 @@ exports.change = async function (req, res) {
 
             if (password != null) {
 
-                if (password == "") {
+                if (password === "") {
                     res.status( 400 )
                         res.send("Can't set new password to empty string")
                 } else {
@@ -185,7 +185,7 @@ exports.change = async function (req, res) {
                     const correct = await bcrypt.compare(currentPassword, user[0].password)
 
                     if (correct) {
-                        users.updatePassword(password, userid);
+                        await users.updatePassword(password, userid);
                         okay = true
 
                     } else {
@@ -208,7 +208,7 @@ exports.change = async function (req, res) {
 
                     const possibleUser = await users.getFromEmail(email, userid);
 
-                    if (possibleUser.length != 0) {
+                    if (possibleUser.length !== 0) {
                         res.status( 400 )
                             res.send("Email already in use")
                     } else {
@@ -222,7 +222,7 @@ exports.change = async function (req, res) {
 
             if (firstName != null) {
 
-                if (firstName == "") {
+                if (firstName === "") {
                     res.status( 400 )
                         res.send("First name can't be empty")
                 } else {
@@ -234,7 +234,7 @@ exports.change = async function (req, res) {
 
             if (lastName != null) {
 
-                if (lastName == "") {
+                if (lastName === "") {
                     res.status( 400 )
                         res.send("Last name can't be empty")
                 } else {
