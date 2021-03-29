@@ -86,7 +86,7 @@ exports.set = async function (req, res) {
 
             if (user[0].image_path == null) {
 
-                await usersImages.set(filename, userid);
+                await usersImages.setPath(filename, userid);
                 res.status( 201 )
                     res.send("Added image to profile");
             } else {
