@@ -7,6 +7,6 @@ module.exports = function (app) {
         .delete(eventsAttendees.remove);
 
 
-    app.route(app.rootUrl + '/events/:id/attendees/:id')
+    app.route(app.rootUrl + '/events/:event_id/attendees/:user_id')
         .post(eventsAttendees.changeStatus);
 };

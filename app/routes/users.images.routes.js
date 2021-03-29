@@ -4,6 +4,6 @@ module.exports = function (app) {
     app.route(app.rootUrl + '/users/:id/image')
         .get(usersImages.retrieve)
         .put(usersImages.set)
-        .deleted(usersImages.delete);
+        .delete(usersImages.delete);
 
 };
