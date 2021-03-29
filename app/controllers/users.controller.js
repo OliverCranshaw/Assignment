@@ -178,7 +178,7 @@ exports.change = async function (req, res) {
             const lastName = req.body.lastName
             const password = req.body.password
             const currentPassword = req.body.currentPassword
-            var okay = false
+            let okay = false
 
 
             if (password != null) {
@@ -212,7 +212,7 @@ exports.change = async function (req, res) {
 
                 } else {
 
-                    const possibleUser = await users.getFromEmail(email, userid);
+                    const possibleUser = await users.getFromEmail(email);
 
                     if (possibleUser.length !== 0) {
                         res.status( 400 )

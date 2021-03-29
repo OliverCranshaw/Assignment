@@ -1,6 +1,9 @@
 const usersImages = require('../models/users.images.model');
-const fs = require('fs');
+const fs = require('fs').promises;
 const bodyParser = require("body-parser");
+const express = require("express");
+
+const app = express();
 
 exports.retrieve = async function (req, res) {
 
@@ -60,10 +63,36 @@ exports.set = async function (req, res) {
 
         const authToken = req.header('X-Authorization');
 
-        if (authToken !== user[0].auth_token) {
+        if (user.length === 0) {
+            res.status( 404 )
+                .send("User not found");
+
+        } else if (authToken == null) {
             res.status(401)
-                .send("Cannot change another users image");
+                .send("No auth token");
+
+        } else if (authToken !== user[0].auth_token) {
+            res.status(403)
+                .send("Cannot change image of another users");
+
         } else {
+
+
+            const filename = 'test1.jpg';
+
+            const savePath = 'storage/images/';
+
+            await fs.writeFile(savePath + filename, req.body);
+
+            if (user[0].image_path == null) {
+
+                await usersImages.set(filename, userid);
+                res.status( 201 )
+                    res.send("Added image to profile");
+            } else {
+                res.status( 200 )
+                    res.send("Updated image on profile");
+            }
 
 
         }
