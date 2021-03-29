@@ -77,8 +77,6 @@ exports.set = async function (req, res) {
 
             const dateString = Date.now();
 
-            console.log(dateString);
-
             let filename = 'user_' + dateString;
 
             const savePath = 'storage/images/';
@@ -101,6 +99,7 @@ exports.set = async function (req, res) {
                 filename += '.gif'
             }
 
+            await usersImages.setPath(filename, userid);
             await fs.writeFile(savePath + filename, req.body);
 
             res.send();
