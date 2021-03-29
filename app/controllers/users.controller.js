@@ -98,7 +98,7 @@ exports.logout = async function (req, res) {
                 .send( 'Incorrect or no auth token' );
         } else {
 
-            users.deleteToken(result[0].id);
+            await users.deleteToken(result[0].id);
 
             res.status( 200 )
                 .send();
@@ -209,7 +209,7 @@ exports.change = async function (req, res) {
                         res.status( 400 )
                             res.send("Email already in use")
                     } else {
-                        users.updateEmail(email, userid);
+                        await users.updateEmail(email, userid);
                         okay = true;
                     }
 
@@ -223,7 +223,7 @@ exports.change = async function (req, res) {
                     res.status( 400 )
                         res.send("First name can't be empty")
                 } else {
-                    users.updateFirstName(firstName, userid);
+                    await users.updateFirstName(firstName, userid);
                     okay = true;
                 }
 
@@ -235,7 +235,7 @@ exports.change = async function (req, res) {
                     res.status( 400 )
                         res.send("Last name can't be empty")
                 } else {
-                    users.updateLastName(lastName, userid);
+                    await users.updateLastName(lastName, userid);
                     okay = true;
                 }
 
@@ -256,4 +256,5 @@ exports.change = async function (req, res) {
         res.status( 500 )
         .send( `ERROR getting user details ${ err }` );
     }
+
 };
