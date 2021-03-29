@@ -159,9 +159,14 @@ exports.change = async function (req, res) {
 
         const authToken = req.header('X-Authorization');
 
-        if (authToken !== user[0].auth_token) {
+        if (authToken == null) {
             res.status(401)
+                .send("No auth token");
+
+        } else if (authToken !== user[0].auth_token) {
+            res.status(403)
                 .send("Cannot change another users details");
+
         } else if (user.length === 0) {
             res.status( 404 )
                 .send("User not found");
