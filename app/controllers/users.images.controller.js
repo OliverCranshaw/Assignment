@@ -74,36 +74,36 @@ exports.set = async function (req, res) {
 
         } else {
 
-            const imageType = req.header("Content-Type");
-
-            const now = new Date();
-            const dateString = date.format(now, 'YYYY-MM-DD_HH-mm-ss');
-
-            let filename = 'user_' + dateString;
-
-            const savePath = 'storage/images/'
-
-
-            if (user[0].image_filename == null) {
-
-                res.status( 201 )
-
-            } else {
-
-                res.status( 200 )
-            }
-
-            if (imageType == 'image/jpeg') {
-                filename += '.jpg';
-            } else if (imageType == 'image/png') {
-                filename += '.png';
-            } else if (imageType == 'image/gif') {
-                filename += '.gif'
-            }
-
-            await fs.writeFile(savePath + filename, req.body);
-
-            res.send();
+            // const imageType = req.header("Content-Type");
+            //
+            // const now = new Date();
+            // const dateString = date.format(now, 'YYYY-MM-DD_HH-mm-ss');
+            //
+            // let filename = 'user_' + dateString;
+            //
+            // const savePath = 'storage/images/'
+            //
+            //
+            // if (user[0].image_filename == null) {
+            //
+            //     res.status( 201 )
+            //
+            // } else {
+            //
+            //     res.status( 200 )
+            // }
+            //
+            // if (imageType == 'image/jpeg') {
+            //     filename += '.jpg';
+            // } else if (imageType == 'image/png') {
+            //     filename += '.png';
+            // } else if (imageType == 'image/gif') {
+            //     filename += '.gif'
+            // }
+            //
+            // await fs.writeFile(savePath + filename, req.body);
+            //
+            // res.send();
 
 
         }
