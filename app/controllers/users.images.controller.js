@@ -1,6 +1,6 @@
 const usersImages = require('../models/users.images.model');
 const fs = require('fs').promises;
-const date = require('date-and-time');
+//const dateTime = require('date-and-time');
 
 exports.retrieve = async function (req, res) {
 
@@ -77,20 +77,20 @@ exports.set = async function (req, res) {
             // const imageType = req.header("Content-Type");
             //
             // const now = new Date();
-            // const dateString = date.format(now, 'YYYY-MM-DD_HH-mm-ss');
+            // const dateString = dateTime.format(now, 'YYYY-MM-DD_HH-mm-ss');
             //
             // let filename = 'user_' + dateString;
             //
-            // const savePath = 'storage/images/'
+            // const savePath = 'storage/images/';
             //
             //
             // if (user[0].image_filename == null) {
             //
-            //     res.status( 201 )
+            //     res.status( 201 );
             //
             // } else {
             //
-            //     res.status( 200 )
+            //     res.status( 200 );
             // }
             //
             // if (imageType == 'image/jpeg') {
@@ -104,7 +104,6 @@ exports.set = async function (req, res) {
             // await fs.writeFile(savePath + filename, req.body);
             //
             // res.send();
-
 
         }
     } catch( err ) {
