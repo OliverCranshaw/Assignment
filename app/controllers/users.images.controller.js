@@ -1,6 +1,5 @@
 const usersImages = require('../models/users.images.model');
 const fs = require('fs').promises;
-const dateTime = require('date-and-time');
 
 exports.retrieve = async function (req, res) {
 
@@ -76,8 +75,9 @@ exports.set = async function (req, res) {
 
             const imageType = req.header("Content-Type");
 
-            const now = new Date();
-            const dateString = dateTime.format(now, 'YYYY-MM-DD_HH-mm-ss');
+            const dateString = Date.now();
+
+            console.log(dateString);
 
             let filename = 'user_' + dateString;
 
