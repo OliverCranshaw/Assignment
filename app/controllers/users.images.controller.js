@@ -135,9 +135,14 @@ exports.delete = async function (req, res) {
 
         } else {
 
+            if (user[0].image_filename == null) {
+                res.status( 404 )
+                    .send("No image to delete");
+            }
+
             await usersImages.setPath( null, userid);
             res.status( 200 )
-                res.send();
+                .send();
 
         }
     } catch( err ) {
