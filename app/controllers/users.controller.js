@@ -76,7 +76,7 @@ exports.login = async function (req, res) {
 
 
         } catch( err ) {
-            res.status( 400 )
+            res.status( 500 )
                 .send( `ERROR logging in to user ${ err }` );
         }
     }
