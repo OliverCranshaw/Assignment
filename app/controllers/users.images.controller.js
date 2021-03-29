@@ -112,5 +112,36 @@ exports.set = async function (req, res) {
 };
 
 exports.delete = async function (req, res) {
-    return null;
+
+    try {
+
+        const userid = req.params.id;
+
+        const user = await usersImages.getFromId(userid);
+
+        const authToken = req.header('X-Authorization');
+
+        if (user.length === 0) {
+            res.status( 404 )
+                .send("User not found");
+
+        } else if (authToken == null) {
+            res.status(401)
+                .send("No auth token");
+
+        } else if (authToken !== user[0].auth_token) {
+            res.status(403)
+                .send("Cannot change image of another users");
+
+        } else {
+
+            await usersImages.setPath( null, userid);
+            res.status( 200 )
+                res.send();
+
+        }
+    } catch( err ) {
+        res.status( 500 )
+            .send( `ERROR changing users image ${ err }` );
+    }
 };
