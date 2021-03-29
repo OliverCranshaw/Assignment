@@ -14,5 +14,8 @@
     "humps": "^2.0.1",
     "mysql2": "^2.1.0",
     "mz": "^2.7.0"
+  },
+  "devDependencies": {
+    "date-and-time": "^0.14.2"
   }
 }

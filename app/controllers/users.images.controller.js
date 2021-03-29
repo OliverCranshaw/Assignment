@@ -1,9 +1,6 @@
 const usersImages = require('../models/users.images.model');
 const fs = require('fs').promises;
-const bodyParser = require("body-parser");
-const express = require("express");
-
-const app = express();
+const date = require('date-and-time');
 
 exports.retrieve = async function (req, res) {
 
@@ -77,22 +74,36 @@ exports.set = async function (req, res) {
 
         } else {
 
+            const imageType = req.header("Content-Type");
 
-            const filename = 'test1.jpg';
+            const now = new Date();
+            const dateString = date.format(now, 'YYYY-MM-DD_HH-mm-ss');
 
-            const savePath = 'storage/images/';
+            let filename = 'user_' + dateString;
+
+            const savePath = 'storage/images/'
+
+
+            if (user[0].image_filename == null) {
+
+                res.status( 201 )
+
+            } else {
+
+                res.status( 200 )
+            }
+
+            if (imageType == 'image/jpeg') {
+                filename += '.jpg';
+            } else if (imageType == 'image/png') {
+                filename += '.png';
+            } else if (imageType == 'image/gif') {
+                filename += '.gif'
+            }
 
             await fs.writeFile(savePath + filename, req.body);
 
-            if (user[0].image_path == null) {
-
-                await usersImages.setPath(filename, userid);
-                res.status( 201 )
-                    res.send("Added image to profile");
-            } else {
-                res.status( 200 )
-                    res.send("Updated image on profile");
-            }
+            res.send();
 
 
         }
