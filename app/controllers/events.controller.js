@@ -98,9 +98,9 @@ exports.view = async function (req, res) {
             res.status(200)
 
             if (count == null) {
-                res.send(result.slice(Number(startIndex)));
+                res.send(result.slice(startIndex));
             } else {
-                res.send(result.slice(Number(startIndex), Number(count) + 1));
+                res.send(result.slice(startIndex, Number(count) + 1));
             }
         }
 
