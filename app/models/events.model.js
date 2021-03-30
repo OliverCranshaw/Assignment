@@ -253,3 +253,30 @@ exports.retrieveCats = async function( ) {
     conn.release();
     return rows;
 };
+
+exports.deleteEvent = async function( eventId ) {
+    console.log( `Request to delete event...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'delete from event where id = ?';
+    const [ rows ] = await conn.query( query, [eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.deleteEventCat = async function( eventId ) {
+    console.log( `Request to delete event categories...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'delete from event_category where event_id = ?';
+    const [ rows ] = await conn.query( query, [eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.deleteAttendees = async function( eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'delete from event_attendees where event_id = ?';
+    const [ rows ] = await conn.query( query, [eventId] );
+    conn.release();
+    return rows;
+};

@@ -41,3 +41,21 @@ exports.getAttendeesAll = async function( eventId ) {
     conn.release();
     return rows;
 };
+
+exports.checkAttendee = async function( eventId, userId ) {
+    console.log( `Request to get attendees for an event...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'select user_id from event_attendees where event_id = ? and user_id = ?';
+    const [ rows ] = await conn.query( query, [ eventId, userId ] );
+    conn.release();
+    return rows;
+};
+
+exports.addAttendee = async function( eventId, userId ) {
+    console.log( `Request to get attendees for an event...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'insert into event_attendees (event_id, user_id, attendance_status_id) values (?, ?, ?)';
+    const [ rows ] = await conn.query( query, [ eventId, userId, 2] );
+    conn.release();
+    return rows;
+};

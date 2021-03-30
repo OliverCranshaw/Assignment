@@ -227,7 +227,44 @@ exports.change = async function (req, res) {
 };
 
 exports.delete = async function (req, res) {
-    return null;
+    try {
+
+        const eventId = req.params.id;
+        const event = await events.getEvent(eventId);
+        const authToken = req.header('X-Authorization');
+
+        if (event.length == 0) {
+            res.status(404)
+                .send("No event found");
+        } else if (authToken == null) {
+            res.status( 401 )
+                .send("No auth token")
+        } else {
+
+            const user = await users.checkAuth(authToken);
+
+            if (user.length == 0) {
+                res.status(401)
+                    .send("Incorrect auth token");
+            } else if (user[0].id !== event[0].organizerId) {
+                res.status( 403 )
+                    .send("You are not the organizer of this event")
+            } else {
+
+                await events.deleteAttendees(eventId);
+                await events.deleteEventCat(eventId);
+                await events.deleteEvent(eventId);
+
+                res.status( 200 )
+                    .send()
+
+            }
+
+        }
+    } catch (err) {
+        res.status(500)
+            .send(`ERROR inserting event ${err}`);
+    }
 };
 
 exports.retrieveCat = async function (req, res) {
