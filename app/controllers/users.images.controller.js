@@ -149,6 +149,6 @@ exports.delete = async function (req, res) {
         }
     } catch( err ) {
         res.status( 500 )
-            .send( `ERROR changing users image ${ err }` );
+            .send( `ERROR deleting users image ${ err }` );
     }
 };
