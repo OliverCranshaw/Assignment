@@ -12,18 +12,22 @@ exports.view = async function (req, res) {
         let sortBy = req.query.sortBy;
         let result = [];
 
+        console.log(catId);
+        //console.log(q);
+        console.log(organizerId);
 
-        if (sortBy == null || 'DATE_DESC') {
+
+        if (sortBy == null || sortBy == 'DATE_DESC') {
             sortBy = 'date DESC';
-        } else if (sortBy == 'ALPHABETICAL_ASC') {
+        } else if (sortBy === 'ALPHABETICAL_ASC') {
             sortBy = 'title ASC';
-        } else if (sortBy == 'ALPHABETICAL_DESC') {
+        } else if (sortBy === 'ALPHABETICAL_DESC') {
             sortBy = 'title DESC';
-        } else if (sortBy == 'DATE_ASC') {
+        } else if (sortBy === 'DATE_ASC') {
             sortBy = 'date ASC';
-        } else if (sortBy == 'CAPACITY_ASC') {
+        } else if (sortBy === 'CAPACITY_ASC') {
             sortBy = 'capacity ASC';
-        } else if (sortBy == 'CAPACITY_DESC') {
+        } else if (sortBy === 'CAPACITY_DESC') {
             sortBy = 'capacity DESC';
         }
 
@@ -31,19 +35,24 @@ exports.view = async function (req, res) {
             startIndex = 0;
         }
 
-        if (search != null) {
 
+        if (search != null && catId != null && organizerId != null) {
+            result = await events.getQueryCatOrg(sortBy, search, catId, organizerId);
+        } else if (catId != null && organizerId != null) {
+            result = await events.getCatOrg(sortBy, search);
+        } else if (search != null && organizerId != null) {
+            result = await events.getQueryOrg(sortBy, search, organizerId);
+        } else if (search != null && catId != null) {
+            result = await events.getQueryCat(sortBy, search, catId);
+        } else if (organizerId != null) {
+            result = await events.getOrdId(sortBy, organizerId);
+        } else if (search != null) {
+            result = await events.getQuery(sortBy, search);
+        } else if (catId != null) {
+            result = await events.getCatId(sortBy, catId);
+        } else {
+            result = await events.getAllEvents(sortBy);
         }
-        if (catId != null) {
-
-        }
-
-        if (organizerId != null) {
-
-        }
-
-
-        result = await events.getQueriedEvents(sortBy);
 
         res.status( 200 )
 
