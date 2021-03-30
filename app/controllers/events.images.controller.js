@@ -1,5 +1,6 @@
 const eventsImages = require('../models/events.images.model');
 const users = require("../models/users.model");
+const fs = require('fs').promises;
 
 exports.retrieve = async function (req, res) {
 

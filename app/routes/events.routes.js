@@ -5,12 +5,12 @@ module.exports = function (app) {
         .get(events.view)
         .post(events.add);
 
+    app.route(app.rootUrl + '/events/categories')
+        .get(events.retrieveCat);
 
     app.route(app.rootUrl + '/events/:id')
         .get(events.retrieve)
         .patch(events.change)
         .delete(events.delete);
 
-    app.route(app.rootUrl + '/events/categories')
-        .get(events.retrieveCat);
 };

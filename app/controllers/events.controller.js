@@ -232,5 +232,16 @@ exports.delete = async function (req, res) {
 };
 
 exports.retrieveCat = async function (req, res) {
-    return null;
+
+    try {
+
+        const catList = await events.retrieveCats();
+
+        res.status( 200 )
+            .send(catList);
+
+    } catch (err) {
+        res.status(500)
+            .send(`ERROR inserting event ${err}`);
+    }
 };

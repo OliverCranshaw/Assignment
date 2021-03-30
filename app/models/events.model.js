@@ -244,3 +244,12 @@ exports.getEvent = async function( eventId ) {
     }
     return rows;
 };
+
+exports.retrieveCats = async function( ) {
+    console.log( `Request to retrieve categories...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'select * from category order by id';
+    const [ rows ] = await conn.query( query );
+    conn.release();
+    return rows;
+};
