@@ -35,8 +35,16 @@ exports.view = async function (req, res) {
 
         if (catId != null) {
 
-            for (let i = 0; i < catId.length; i++) {
-                result = await events.checkCat(catId[i]);
+            if (Array.isArray(catId)) {
+
+                for (let i = 0; i < catId.length; i++) {
+                    result = await events.checkCat(catId[i]);
+                    if (result.length === 0) {
+                        valid = false;
+                    }
+                }
+            } else {
+                result = await events.checkCat(catId);
                 if (result.length === 0) {
                     valid = false;
                 }
