@@ -32,6 +32,10 @@ exports.retrieve = async function (req, res) {
                     }
                     res.status( 200 )
                         .send(attendees);
+                } else {
+                    attendees = await eventsAttendees.getAttendees(eventId);
+                    res.status(200)
+                        .send(attendees);
                 }
             } else {
                 attendees = await eventsAttendees.getAttendees(eventId);
