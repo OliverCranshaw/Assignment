@@ -77,12 +77,12 @@ exports.set = async function (req, res) {
 
                 const dateString = Date.now();
 
-                let filename = 'user_' + dateString;
+                let filename = 'event_' + dateString;
 
                 const savePath = 'storage/images/';
 
 
-                if (user[0].image_filename == null) {
+                if (event[0].image_filename == null) {
 
                     res.status(201);
 
