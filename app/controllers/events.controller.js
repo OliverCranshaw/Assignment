@@ -13,7 +13,6 @@ exports.view = async function (req, res) {
         let sortBy = req.query.sortBy;
         let result = [];
 
-
         if (sortBy == null || sortBy == 'DATE_DESC') {
             sortBy = 'date DESC';
         } else if (sortBy === 'ALPHABETICAL_ASC') {
@@ -33,6 +32,10 @@ exports.view = async function (req, res) {
         }
 
         let valid = true;
+
+        if (count === "") {
+            valid = false;
+        }
 
         if (catId != null) {
 
@@ -54,7 +57,7 @@ exports.view = async function (req, res) {
 
         if (!valid) {
             res.status( 400 )
-                res.send("Category ID does not exist")
+                res.send()
         } else {
 
             if (search != null && catId != null && organizerId != null) {
@@ -98,9 +101,9 @@ exports.view = async function (req, res) {
             res.status(200)
 
             if (count == null) {
-                res.send(result.slice(startIndex));
+                res.send(result.slice(Number(startIndex)));
             } else {
-                res.send(result.slice(startIndex, Number(count) + 1));
+                res.send(result.slice(Number(startIndex), Number(count) + 1));
             }
         }
 
