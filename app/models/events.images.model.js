@@ -19,3 +19,13 @@ exports.getFromId = async function( eventId ) {
     conn.release();
     return result;
 };
+
+exports.setPath = async function( imagePath, eventId ) {
+
+    console.log( `Request to set event image path...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set image_filename = ? where id = ?';
+    const [ result ] = await conn.query( query, [ imagePath, eventId ]);
+    conn.release();
+    return result;
+};

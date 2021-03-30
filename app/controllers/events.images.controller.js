@@ -118,7 +118,7 @@ exports.set = async function (req, res) {
         }
     } catch( err ) {
         res.status( 500 )
-            .send( `ERROR changing users image ${ err }` );
+            .send( `ERROR changing events image ${ err }` );
     }
 };
 
