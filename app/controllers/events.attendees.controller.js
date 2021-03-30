@@ -102,7 +102,57 @@ exports.request = async function (req, res) {
 };
 
 exports.remove = async function (req, res) {
-    return null;
+
+    try {
+        const eventId = req.params.id;
+        const event = await events.getEvent(eventId);
+        const authToken = req.header('X-Authorization');
+
+        if (event.length == 0) {
+            res.status(404)
+                .send("No event found");
+        } else if (authToken == null) {
+            res.status( 401 )
+                .send("No auth token")
+        } else {
+
+            const user = await users.checkAuth(authToken);
+
+            if (user.length == 0) {
+                res.status(401)
+                    .send("Incorrect auth token");
+            } else {
+                const userId = user[0].id;
+
+                const dateObject = new Date(event[0].date);
+                const now = new Date();
+
+                const possibleAttendee = await eventsAttendees.checkAttendee(eventId, userId);
+
+                if (dateObject < now) {
+                    res.status( 403 )
+                        .send("Can't delete from event in the past");
+                } else if (possibleAttendee.length == 0) {
+                    res.status( 403 )
+                        .send("Can't delete from event you haven't signed up for");
+                } else if (possibleAttendee.attendance_status_id == 3) {
+                    res.status( 403 )
+                        .send("Can't delete from event you have been rejected for");
+                } else {
+                    await eventsAttendees.deleteAttendee(eventId, userId);
+                    res.status( 200 )
+                        .send();
+                }
+
+
+
+            }
+        }
+
+    } catch (err) {
+        res.status(500)
+            .send(`ERROR inserting event ${err}`);
+    }
 };
 
 exports.changeStatus = async function (req, res) {

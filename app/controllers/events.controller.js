@@ -180,7 +180,7 @@ exports.add = async function (req, res) {
                             const eventCheck = await events.checkEvent(title, date, userId);
 
                             if (eventCheck.length !== 0) {
-                                res.status( 403 )
+                                res.status( 400 )
                                     .send("Event already created");
 
                             } else {
