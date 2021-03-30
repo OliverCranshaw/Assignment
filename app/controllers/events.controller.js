@@ -10,7 +10,7 @@ exports.view = async function (req, res) {
         let catId = req.query.categoryIds;
         let organizerId = req.query.organizerId;
         let sortBy = req.query.sortBy;
-
+        let result = [];
 
 
         if (sortBy == null || 'DATE_DESC') {
@@ -43,14 +43,14 @@ exports.view = async function (req, res) {
         }
 
 
-        const result = await events.getQueriedEvents(sortBy);
+        result = await events.getQueriedEvents(sortBy);
 
         res.status( 200 )
 
         if (count == null) {
             res.send( result.slice(startIndex) );
         } else {
-            res.send( result.slice(startIndex, count + 1) );
+            res.send( result.slice(startIndex, Number(count) + 1) );
         }
 
 

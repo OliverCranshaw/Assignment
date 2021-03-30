@@ -2,7 +2,6 @@ const db = require('../../config/db');
 
 exports.getQueriedEvents = async function(sortBy) {
 
-    console.log(sortBy);
 
     console.log( 'Request to get all events from the database...' );
     const conn = await db.getPool().getConnection();
