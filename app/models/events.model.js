@@ -180,7 +180,7 @@ exports.getQueryCatOrg = async function(sortBy, search, catList, orgId) {
 exports.checkCat = async function( catId ) {
     console.log( `Request to check catId in the database...` );
     const conn = await db.getPool().getConnection();
-    const query = 'select * from event_category where category_id = ?';
+    const query = 'select * from category where id = ?';
     const [ rows ] = await conn.query( query, [ catId ] );
     conn.release();
     return rows;
@@ -188,25 +188,38 @@ exports.checkCat = async function( catId ) {
 
 
 exports.getEventCats = async function( eventId ) {
-        console.log( `Request to check catId in the database...` );
-        const conn = await db.getPool().getConnection();
-        const query = 'select group_concat(distinct category_id) as "eventCats" from event join event_category on event.id = event_category.event_id \
-        where event.id = ?'
-        const [ rows ] = await conn.query( query, [ eventId ] );
-        conn.release();
-
-        for (let i = 0; i < rows.length; i++ ) {
-            rows[i].eventCats = rows[i].eventCats.split(',').map(Number);
-        }
-
-        return rows;
-    };
-
-exports.insert = async function( username ) {
-    console.log( `Request to insert ${username} into the database...` );
+    console.log( `Request to check catId in the database...` );
     const conn = await db.getPool().getConnection();
-    const query = 'insert into lab2_users (username) values ( ? )';
-    const [ result ] = await conn.query( query, [ username ] );
+    const query = 'select group_concat(distinct category_id) as "eventCats" from event join event_category on event.id = event_category.event_id \
+    where event.id = ?'
+    const [ rows ] = await conn.query( query, [ eventId ] );
     conn.release();
-    return result;
+
+    for (let i = 0; i < rows.length; i++ ) {
+        rows[i].eventCats = rows[i].eventCats.split(',').map(Number);
+    }
+
+    return rows;
+};
+
+exports.insert = async function( title, description, date, isOnline, url, venue, capacity, requiresAttendanceControl, fee, userId ) {
+    console.log( `Request to insert event into the database...` );
+
+    let idCreated = 0;
+
+    const conn = await db.getPool().getConnection();
+    const query = 'insert into event (title, description, date, is_online, url, venue, capacity, requires_attendance_control, fee, organizer_id) values ( ?, ?, ?, ?, ?, ?, ?, ?, ?, ? )';
+    const [ rows ] = await conn.query( query, [ title, description, date, isOnline, url, venue, capacity, requiresAttendanceControl, fee, userId ] );
+    conn.release();
+
+    return rows;
+};
+
+exports.insertCat = async function( eventId, catId ) {
+    console.log( `Request to insert event categories into the database...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'insert into event_category (event_id, category_id) values ( ?, ? )';
+    const [ rows ] = await conn.query( query, [ eventId, catId ] );
+    conn.release();
+    return rows;
 };

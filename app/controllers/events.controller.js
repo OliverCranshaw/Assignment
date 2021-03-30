@@ -1,4 +1,5 @@
 const events = require('../models/events.model');
+const users = require('../models/users.model');
 
 exports.view = async function (req, res) {
     console.log( '\nRequest to list users...' );
@@ -112,17 +113,91 @@ exports.view = async function (req, res) {
 };
 
 exports.add = async function (req, res) {
-        console.log( '\nRequest to add event...' );
-        try {
-            const result = await events.insert(req);
-            res.status( 201 )
-                .send( result );
 
+    console.log('\nRequest to add event...');
+    try {
+        const authToken = req.header('X-Authorization');
 
-        } catch( err ) {
-            res.status( 500 )
-                .send( `ERROR getting users ${ err }` );
+        if (authToken == null) {
+            res.status(401)
+                .send("No auth token");
+        } else {
+            const user = await users.checkAuth(authToken);
+            if (user.length == 0) {
+                res.status(401)
+                    .send("Incorrect auth token");
+            } else {
+                const userId = user[0].id;
+                const title = req.body.title;
+                const description = req.body.description;
+                const catList = req.body.categoryIds;
+                const date = req.body.date;
+                const date_time = date.split(" ");
+                const dateString = date_time[0];
+                const dateObject = new Date(dateString);
+                let isOnline = req.body.isOnline;
+                const url = req.body.url;
+                const venue = req.body.venue;
+                const capacity = req.body.capacity;
+                let requiresAttendanceControl = req.body.requiresAttendanceControl;
+                let fee = req.body.fee;
+
+                if (isOnline == null) {
+                    isOnline = 0;
+                }
+                if (requiresAttendanceControl == null) {
+                    requiresAttendanceControl = 0;
+                }
+                if (fee == null) {
+                    fee = 0.00;
+                }
+                if (title == null || title === "" || description == null || catList == null) {
+                    res.status(400)
+                        .send("Bad request body");
+
+                } else {
+                    let valid = true;
+                    const catList = req.body.categoryIds;
+
+                    for (let i = 0; i < catList.length; i++) {
+                        let result = await events.checkCat(catList[i]);
+                        if (result.length === 0) {
+                            valid = false;
+                        }
+                    }
+
+                    if (!valid) {
+                        res.status(400)
+                            .send("Category ID does not exist");
+                    } else {
+                        let now = new Date();
+                        if (dateObject < now) {
+
+                            res.status(400)
+                                .send("Date is not in the future");
+
+                        } else {
+                            let result = await events.insert(title, description, date, isOnline, url, venue, capacity, requiresAttendanceControl, fee, userId);
+
+                            for (let i = 0; i < catList.length; i++) {
+
+                                await events.insertCat(result.insertId, catList[i]);
+                            }
+
+                            res.status( 201 )
+                                .send({eventId: result.insertId});
+
+                        }
+                    }
+
+                }
+            }
         }
+
+    } catch (err) {
+        res.status(500)
+            .send(`ERROR inserting event ${err}`);
+    }
 };
 
 exports.retrieve = async function (req, res) {
