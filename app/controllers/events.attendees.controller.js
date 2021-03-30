@@ -1,4 +1,5 @@
 const eventsAttendees = require('../models/events.attendees.model');
+const users = require("../models/users.model");
 
 exports.retrieve = async function (req, res) {
 
@@ -12,11 +13,32 @@ exports.retrieve = async function (req, res) {
             res.status( 404 )
                 .send("No event found");
         } else {
+            let attendees = [];
+            const authToken = req.header('X-Authorization');
 
-            const attendees = await eventsAttendees.getAttendees(eventId);
+            if (authToken != null) {
 
-            res.status( 200 )
-                .send(attendees);
+                const user = await users.checkAuth(authToken);
+
+                if (user.length != 0) {
+
+                    const userId = user[0].id;
+
+                    if (userId == event[0].organizer_id) {
+                        attendees = await eventsAttendees.getAttendeesAll(eventId);
+                    } else {
+                        attendees = await eventsAttendees.getAttendeesAndSelf(eventId, userId);
+                    }
+                    res.status( 200 )
+                        .send(attendees);
+                }
+            } else {
+                attendees = await eventsAttendees.getAttendees(eventId);
+                res.status( 200 )
+                    .send(attendees);
+            }
+
+
         }
 
     } catch (err) {
