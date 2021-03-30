@@ -280,3 +280,12 @@ exports.deleteAttendees = async function( eventId ) {
     conn.release();
     return rows;
 };
+
+exports.checkEvent = async function( title, date, orgId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'select * from event where title = ? and date = ? and organizer_id = ?';
+    const [ rows ] = await conn.query( query, [title, date, orgId] );
+    conn.release();
+    return rows;
+};

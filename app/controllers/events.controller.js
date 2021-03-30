@@ -176,15 +176,25 @@ exports.add = async function (req, res) {
                                 .send("Date is not in the future");
 
                         } else {
-                            let result = await events.insert(title, description, date, isOnline, url, venue, capacity, requiresAttendanceControl, fee, userId);
 
-                            for (let i = 0; i < catList.length; i++) {
+                            const eventCheck = await events.checkEvent(title, date, userId);
 
-                                await events.insertCat(result.insertId, catList[i]);
+                            if (eventCheck.length !== 0) {
+                                res.status( 403 )
+                                    .send("Event already created");
+
+                            } else {
+
+                                let result = await events.insert(title, description, date, isOnline, url, venue, capacity, requiresAttendanceControl, fee, userId);
+
+                                for (let i = 0; i < catList.length; i++) {
+
+                                    await events.insertCat(result.insertId, catList[i]);
+                                }
+
+                                res.status(201)
+                                    .send({eventId: result.insertId});
                             }
-
-                            res.status( 201 )
-                                .send({eventId: result.insertId});
 
                         }
                     }
