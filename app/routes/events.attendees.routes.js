@@ -8,5 +8,5 @@ module.exports = function (app) {
 
 
     app.route(app.rootUrl + '/events/:event_id/attendees/:user_id')
-        .post(eventsAttendees.changeStatus);
+        .patch(eventsAttendees.changeStatus);
 };

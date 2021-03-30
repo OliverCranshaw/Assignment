@@ -156,5 +156,61 @@ exports.remove = async function (req, res) {
 };
 
 exports.changeStatus = async function (req, res) {
-    return null;
+
+    try {
+        const eventId = req.params.event_id;
+        const userId = req.params.user_id
+        const event = await events.getEvent(eventId);
+        const authToken = req.header('X-Authorization');
+
+        const status = req.body.status;
+
+        if (event.length == 0) {
+            res.status(404)
+                .send("No event found");
+        } else if (authToken == null) {
+            res.status(401)
+                .send("No auth token")
+        } else if (status == null || !(status === "accepted" || status === "pending" || status === "rejected")) {
+            res.status(400)
+                .send("Wrong status")
+        } else {
+
+            const user = await users.checkAuth(authToken);
+
+            if (user.length == 0) {
+                res.status(401)
+                    .send("Incorrect auth token");
+
+            } else if (userId != user[0].id) {
+                res.status(401)
+                    .send("Incorrect auth token");
+
+            } else if (userId != event[0].organizerId) {
+                res.status(403)
+                    .send("You are not the organizer of this event");
+            } else {
+
+                const possibleAttendee = await eventsAttendees.checkAttendee(eventId, userId);
+
+                if (possibleAttendee.length == 0) {
+                    res.status(404)
+                        .send("Can't update user who is not attending");
+                } else {
+
+                    await eventsAttendees.updateAttendee(status, eventId, userId);
+                    res.status( 200 )
+                        .send();
+                }
+
+
+
+            }
+        }
+
+    } catch (err) {
+        res.status(500)
+            .send(`ERROR inserting event ${err}`);
+    }
+
 };

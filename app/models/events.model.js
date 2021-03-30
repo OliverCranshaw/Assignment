@@ -9,7 +9,7 @@ exports.getAllEvents = async function(sortBy) {
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 group by E.id order by ' + sortBy
+        group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query);
     conn.release();
@@ -32,7 +32,7 @@ exports.getQuery = async function(sortBy, search) {
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 and (title like ? or description like ?) group by E.id order by ' + sortBy
+        where (title like ? or description like ?) group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query, [search, search] );
     conn.release();
@@ -53,7 +53,7 @@ exports.getCatId = async function(sortBy, catList) {
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 and category_id in (?) group by E.id order by ' + sortBy
+        where category_id in (?) group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query, [catList]);
     conn.release();
@@ -74,7 +74,7 @@ exports.getOrdId = async function(sortBy, ordId) {
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 and organizer_id = ? group by E.id order by ' + sortBy
+        where organizer_id = ? group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query, [ordId]);
     conn.release();
@@ -97,7 +97,7 @@ exports.getQueryCat = async function(sortBy, search, catList) {
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 and (title like ? or description like ?) and category_id in (?) group by E.id order by ' + sortBy
+        where (title like ? or description like ?) and category_id in (?) group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query, [search, search, catList]);
     conn.release();
@@ -120,7 +120,7 @@ exports.getQueryOrg = async function(sortBy, search, orgId) {
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 and (title like ? or description like ?) and organizer_id = ? group by E.id order by ' + sortBy
+        where (title like ? or description like ?) and organizer_id = ? group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query, [search, search, orgId]);
     conn.release();
@@ -141,7 +141,7 @@ exports.getCatOrg = async function(sortBy, catList, orgId) {
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 and category_id in (?) and organizer_id = ? group by E.id order by ' + sortBy
+        where category_id in (?) and organizer_id = ? group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query, [catList, orgId]);
     conn.release();
@@ -164,7 +164,7 @@ exports.getQueryCatOrg = async function(sortBy, search, catList, orgId) {
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 and (title like ? or description like ?) and category_id in (?) and organizer_id = ? \
+        where (title like ? or description like ?) and category_id in (?) and organizer_id = ? \
         group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query, [search, search, catList, orgId]);
@@ -234,7 +234,7 @@ exports.getEvent = async function( eventId ) {
         organizer_id as organizerId, date, is_online as isOnline, url, venue, requires_attendance_control as requiresAttendanceControl, fee \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
-        where EA.attendance_status_id = 1 and E.id = ? group by E.id'
+        where E.id = ? group by E.id'
 
     const [rows] = await conn.query(query, [eventId]);
     conn.release();

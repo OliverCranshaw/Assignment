@@ -68,3 +68,12 @@ exports.deleteAttendee = async function( eventId, userId ) {
     conn.release();
     return rows;
 };
+
+exports.updateAttendee = async function( status, eventId, userId ) {
+    console.log( `Request to get attendees for an event...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event_attendees set attendance_status_id = ? where event_id = ? and user_id = ?';
+    const [ rows ] = await conn.query( query, [ status, eventId, userId] );
+    conn.release();
+    return rows;
+};
