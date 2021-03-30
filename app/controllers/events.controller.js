@@ -149,7 +149,7 @@ exports.add = async function (req, res) {
                 if (fee == null) {
                     fee = 0.00;
                 }
-                if (title == null || title === "" || description == null || catList == null) {
+                if (title == null || title === "" || description == null || catList == null || date == null) {
                     res.status(400)
                         .send("Bad request body");
                 } else if (capacity != null && capacity < 1) {
@@ -170,7 +170,7 @@ exports.add = async function (req, res) {
                             .send("Category ID does not exist");
                     } else {
                         let now = new Date();
-                        if (date != null && dateObject < now) {
+                        if (dateObject < now) {
 
                             res.status(400)
                                 .send("Date is not in the future");
