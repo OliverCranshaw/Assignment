@@ -132,9 +132,7 @@ exports.add = async function (req, res) {
                 const description = req.body.description;
                 const catList = req.body.categoryIds;
                 const date = req.body.date;
-                const date_time = date.split(" ");
-                const dateString = date_time[0];
-                const dateObject = new Date(dateString);
+                const dateObject = new Date(date);
                 let isOnline = req.body.isOnline;
                 const url = req.body.url;
                 const venue = req.body.venue;
@@ -154,7 +152,9 @@ exports.add = async function (req, res) {
                 if (title == null || title === "" || description == null || catList == null) {
                     res.status(400)
                         .send("Bad request body");
-
+                } else if (capacity != null && capacity < 1) {
+                    res.status(400)
+                        .send("Bad request body");
                 } else {
                     let valid = true;
                     const catList = req.body.categoryIds;
@@ -183,7 +183,6 @@ exports.add = async function (req, res) {
                                 await events.insertCat(result.insertId, catList[i]);
                             }
 
-                            console.log(result.insertId);
                             res.status( 201 )
                                 .send({eventId: result.insertId});
 
