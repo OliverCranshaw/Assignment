@@ -9,8 +9,8 @@ exports.getQueriedEvents = async function(sortBy) {
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
         last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
-        join event_attendees EA on E.id = EA.event_id join attendance_status ST \
-        where ST.name = "accepted" group by E.id order by ' + sortBy
+        join event_attendees EA on E.id = EA.event_id \
+        where EA.attendance_status_id = 1 group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query);
     conn.release();
