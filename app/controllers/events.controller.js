@@ -170,7 +170,7 @@ exports.add = async function (req, res) {
                             .send("Category ID does not exist");
                     } else {
                         let now = new Date();
-                        if (dateObject < now) {
+                        if (date != null && dateObject < now) {
 
                             res.status(400)
                                 .send("Date is not in the future");
