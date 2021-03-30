@@ -12,10 +12,6 @@ exports.view = async function (req, res) {
         let sortBy = req.query.sortBy;
         let result = [];
 
-        console.log(catId);
-        //console.log(q);
-        console.log(organizerId);
-
 
         if (sortBy == null || sortBy == 'DATE_DESC') {
             sortBy = 'date DESC';
