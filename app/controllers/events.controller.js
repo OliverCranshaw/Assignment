@@ -158,7 +158,6 @@ exports.add = async function (req, res) {
                 } else {
                     let valid = true;
                     const catList = req.body.categoryIds;
-
                     for (let i = 0; i < catList.length; i++) {
                         let result = await events.checkCat(catList[i]);
                         if (result.length === 0) {
@@ -184,6 +183,7 @@ exports.add = async function (req, res) {
                                 await events.insertCat(result.insertId, catList[i]);
                             }
 
+                            console.log(result.insertId);
                             res.status( 201 )
                                 .send({eventId: result.insertId});
 

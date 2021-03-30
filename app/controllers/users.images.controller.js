@@ -72,7 +72,6 @@ exports.set = async function (req, res) {
                 .send("Cannot change image of another users");
 
         } else {
-
             const imageType = req.header("Content-Type");
 
             const dateString = Date.now();
@@ -93,14 +92,24 @@ exports.set = async function (req, res) {
 
             if (imageType == 'image/jpeg') {
                 filename += '.jpg';
+
+                await usersImages.setPath(filename, userid);
+                await fs.writeFile(savePath + filename, req.body);
             } else if (imageType == 'image/png') {
                 filename += '.png';
+
+                await usersImages.setPath(filename, userid);
+                await fs.writeFile(savePath + filename, req.body);
+
             } else if (imageType == 'image/gif') {
                 filename += '.gif'
+
+                await usersImages.setPath(filename, userid);
+                await fs.writeFile(savePath + filename, req.body);
+            } else {
+                res.status(400)
             }
 
-            await usersImages.setPath(filename, userid);
-            await fs.writeFile(savePath + filename, req.body);
 
             res.send();
 
