@@ -46,7 +46,13 @@ exports.view = async function (req, res) {
         const result = await events.getQueriedEvents(sortBy);
 
         res.status( 200 )
-            .send( result.slice(startIndex, count + 1) );
+
+        if (count == null) {
+            res.send( result.slice(startIndex) );
+        } else {
+            res.send( result.slice(startIndex, count + 1) );
+        }
+
 
 
     } catch( err ) {
