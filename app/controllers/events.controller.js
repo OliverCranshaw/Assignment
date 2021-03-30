@@ -201,7 +201,26 @@ exports.add = async function (req, res) {
 };
 
 exports.retrieve = async function (req, res) {
-    return null;
+
+    try {
+
+        const eventId = req.params.id;
+
+        const event = await events.getEvent(eventId);
+
+        if (event.length == 0) {
+            res.status( 404 )
+                .send("No event found");
+        } else {
+            const eventObj = event[0];
+            res.status( 200 )
+                res.send(eventObj)
+        }
+
+    } catch (err) {
+        res.status(500)
+            .send(`ERROR inserting event ${err}`);
+    }
 };
 
 exports.change = async function (req, res) {
