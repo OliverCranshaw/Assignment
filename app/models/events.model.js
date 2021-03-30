@@ -177,7 +177,30 @@ exports.getQueryCatOrg = async function(sortBy, search, catList, orgId) {
 
 };
 
+exports.checkCat = async function( catId ) {
+    console.log( `Request to check catId in the database...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'select * from event_category where category_id = ?';
+    const [ rows ] = await conn.query( query, [ catId ] );
+    conn.release();
+    return rows;
+};
 
+
+exports.getEventCats = async function( eventId ) {
+        console.log( `Request to check catId in the database...` );
+        const conn = await db.getPool().getConnection();
+        const query = 'select group_concat(distinct category_id) as "eventCats" from event join event_category on event.id = event_category.event_id \
+        where event.id = ?'
+        const [ rows ] = await conn.query( query, [ eventId ] );
+        conn.release();
+
+        for (let i = 0; i < rows.length; i++ ) {
+            rows[i].eventCats = rows[i].eventCats.split(',').map(Number);
+        }
+
+        return rows;
+    };
 
 exports.insert = async function( username ) {
     console.log( `Request to insert ${username} into the database...` );

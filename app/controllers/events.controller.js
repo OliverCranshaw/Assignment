@@ -31,31 +31,68 @@ exports.view = async function (req, res) {
             startIndex = 0;
         }
 
+        let valid = true;
 
-        if (search != null && catId != null && organizerId != null) {
-            result = await events.getQueryCatOrg(sortBy, search, catId, organizerId);
-        } else if (catId != null && organizerId != null) {
-            result = await events.getCatOrg(sortBy, search);
-        } else if (search != null && organizerId != null) {
-            result = await events.getQueryOrg(sortBy, search, organizerId);
-        } else if (search != null && catId != null) {
-            result = await events.getQueryCat(sortBy, search, catId);
-        } else if (organizerId != null) {
-            result = await events.getOrdId(sortBy, organizerId);
-        } else if (search != null) {
-            result = await events.getQuery(sortBy, search);
-        } else if (catId != null) {
-            result = await events.getCatId(sortBy, catId);
-        } else {
-            result = await events.getAllEvents(sortBy);
+        if (catId != null) {
+
+            for (let i = 0; i < catId.length; i++) {
+                result = await events.checkCat(catId[i]);
+                if (result.length === 0) {
+                    valid = false;
+                }
+            }
         }
 
-        res.status( 200 )
-
-        if (count == null) {
-            res.send( result.slice(startIndex) );
+        if (!valid) {
+            res.status( 400 )
+                res.send("Category ID does not exist")
         } else {
-            res.send( result.slice(startIndex, Number(count) + 1) );
+
+            if (search != null && catId != null && organizerId != null) {
+                result = await events.getQueryCatOrg(sortBy, search, catId, organizerId);
+                for (let i = 0; i < result.length; i++) {
+                    let eventCats = await events.getEventCats(result[i].eventId);
+                    result[i].categories = eventCats[0].eventCats;
+                }
+
+            } else if (catId != null && organizerId != null) {
+                result = await events.getCatOrg(sortBy, search);
+                for (let i = 0; i < result.length; i++) {
+                    let eventCats = await events.getEventCats(result[i].eventId);
+                    result[i].categories = eventCats[0].eventCats;
+                }
+
+            } else if (search != null && organizerId != null) {
+                result = await events.getQueryOrg(sortBy, search, organizerId);
+            } else if (search != null && catId != null) {
+                result = await events.getQueryCat(sortBy, search, catId);
+                for (let i = 0; i < result.length; i++) {
+                    let eventCats = await events.getEventCats(result[i].eventId);
+                    result[i].categories = eventCats[0].eventCats;
+                }
+
+            } else if (organizerId != null) {
+                result = await events.getOrdId(sortBy, organizerId);
+            } else if (search != null) {
+                result = await events.getQuery(sortBy, search);
+            } else if (catId != null) {
+                result = await events.getCatId(sortBy, catId);
+                for (let i = 0; i < result.length; i++) {
+                    let eventCats = await events.getEventCats(result[i].eventId);
+                    result[i].categories = eventCats[0].eventCats;
+                }
+
+            } else {
+                result = await events.getAllEvents(sortBy);
+            }
+
+            res.status(200)
+
+            if (count == null) {
+                res.send(result.slice(startIndex));
+            } else {
+                res.send(result.slice(startIndex, Number(count) + 1));
+            }
         }
 
 
