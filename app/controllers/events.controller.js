@@ -236,7 +236,124 @@ exports.retrieve = async function (req, res) {
 };
 
 exports.change = async function (req, res) {
-    return null;
+
+    try {
+        const eventId = req.params.id;
+        const event = await events.getEvent(eventId);
+        const authToken = req.header('X-Authorization');
+
+        if (event.length == 0) {
+            res.status(404)
+                .send("No event found");
+        } else if (authToken == null) {
+            res.status( 401 )
+                .send("No auth token")
+        } else {
+
+            const user = await users.checkAuth(authToken);
+            const dateObject = new Date(event[0].date);
+            const now = new Date();
+
+            if (user.length == 0) {
+                res.status(401)
+                    .send("Incorrect auth token");
+            } else if (user[0].id !== event[0].organizerId) {
+                res.status(403)
+                    .send("You are not the organizer of this event")
+            } else if (dateObject < now) {
+                res.status(403)
+                    .send("Event is in the past so can't be changed")
+            } else {
+
+                const title = req.body.title;
+                const description = req.body.description;
+                const catList = req.body.categoryIds;
+                const date = req.body.date;
+                let isOnline = req.body.isOnline;
+                const url = req.body.url;
+                const venue = req.body.venue;
+                const capacity = req.body.capacity;
+                let requiresAttendanceControl = req.body.requiresAttendanceControl;
+                let fee = req.body.fee;
+
+                let validReq = false;
+
+                if (title != null && title != "") {
+                    await events.updateTitle(title, eventId)
+                    validReq = true;
+                }
+                if (description != null) {
+                    await events.updateDesc(description, eventId)
+                    validReq = true;
+                }
+                if (catList != null) {
+                    let validCat = true;
+
+                    for (let i = 0; i < catList.length; i++) {
+                        let result = await events.checkCat(catList[i]);
+                        if (result.length === 0) {
+                            validCat = false;
+                        }
+                    }
+                    if (validCat) {
+                        validReq = true;
+                        await events.deleteAllCat(eventId);
+
+                        for (let i = 0; i < catList.length; i++) {
+                            await events.addCategory(eventId, catList[i]);
+                        }
+                    }
+
+
+                }
+                if (date != null) {
+                    const dateObject = new Date(date);
+
+                    if (now < dateObject) {
+                        await events.updateDate(date, eventId)
+                        validReq = true;
+                    }
+                }
+                if (isOnline != null) {
+                    await events.updateIsOnline(isOnline, eventId)
+                    validReq = true;
+                }
+                if (url != null) {
+                    await events.updateURL(url, eventId)
+                    validReq = true;
+                }
+                if (venue != null) {
+                    await events.updateVenue(venue, eventId)
+                    validReq = true;
+                }
+                if (capacity != null) {
+                    await events.updateCapacity(capacity, eventId)
+                    validReq = true;
+                }
+                if (requiresAttendanceControl != null) {
+                    await events.updateReqCap(requiresAttendanceControl, eventId)
+                    validReq = true;
+                }
+                if (fee != null) {
+                    await events.updateFee(fee, eventId)
+                    validReq = true;
+                }
+
+                if (validReq) {
+                    res.status(200)
+                        .send();
+                } else {
+                    res.status(400)
+                        .send("None of your inputed fields are correct");
+                }
+
+            }
+        }
+
+    } catch (err) {
+        res.status(500)
+            .send(`ERROR inserting event ${err}`);
+    }
 };
 
 exports.delete = async function (req, res) {

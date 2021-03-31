@@ -291,3 +291,103 @@ exports.checkEvent = async function( title, date, orgId ) {
     conn.release();
     return rows;
 };
+
+exports.updateTitle = async function( title, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set title = ? where id = ?';
+    const [ rows ] = await conn.query( query, [title, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.updateDesc = async function( desc, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set description = ? where id = ?';
+    const [ rows ] = await conn.query( query, [desc, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.updateDate = async function( date, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set date = ? where id = ?';
+    const [ rows ] = await conn.query( query, [date, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.updateIsOnline = async function( isOnline, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set is_online = ? where id = ?';
+    const [ rows ] = await conn.query( query, [isOnline, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.updateURL = async function( url, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set url = ? where id = ?';
+    const [ rows ] = await conn.query( query, [url, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.updateVenue = async function( venue, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set venue = ? where id = ?';
+    const [ rows ] = await conn.query( query, [venue, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.updateCapacity = async function( capacity, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set capacity = ? where id = ?';
+    const [ rows ] = await conn.query( query, [capacity, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.updateReqCap = async function( reqCap, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set requires_attendance_control = ? where id = ?';
+    const [ rows ] = await conn.query( query, [reqCap, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.updateFee = async function( fee, eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'update event set fee = ? where id = ?';
+    const [ rows ] = await conn.query( query, [fee, eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.deleteAllCat = async function( eventId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'delete from event_category where event_id = ?';
+    const [ rows ] = await conn.query( query, [eventId] );
+    conn.release();
+    return rows;
+};
+
+exports.addCategory = async function( eventId, catId ) {
+    console.log( `Request to delete event attendees...` );
+    const conn = await db.getPool().getConnection();
+    const query = 'insert into event_category (event_id, category_id) values (?, ?)';
+    const [ rows ] = await conn.query( query, [eventId, catId] );
+    conn.release();
+    return rows;
+};
+
