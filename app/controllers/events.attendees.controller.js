@@ -1,6 +1,5 @@
 const eventsAttendees = require('../models/events.attendees.model');
 const users = require("../models/users.model");
-const events = require("../models/events.attendees.model");
 
 exports.retrieve = async function (req, res) {
 
@@ -57,7 +56,7 @@ exports.request = async function (req, res) {
     try {
 
         const eventId = req.params.id;
-        const event = await events.getEvent(eventId);
+        const event = await eventsAttendees.getEvent(eventId);
         const authToken = req.header('X-Authorization');
 
         if (event.length == 0) {
@@ -105,7 +104,7 @@ exports.remove = async function (req, res) {
 
     try {
         const eventId = req.params.id;
-        const event = await events.getEvent(eventId);
+        const event = await eventsAttendees.getEvent(eventId);
         const authToken = req.header('X-Authorization');
 
         if (event.length == 0) {
@@ -160,7 +159,7 @@ exports.changeStatus = async function (req, res) {
     try {
         const eventId = req.params.event_id;
         const userId = req.params.user_id
-        const event = await events.getEvent(eventId);
+        const event = await eventsAttendees.getEvent(eventId);
         const authToken = req.header('X-Authorization');
 
         const status = req.body.status;
@@ -186,19 +185,29 @@ exports.changeStatus = async function (req, res) {
                 res.status(401)
                     .send("Incorrect auth token");
 
-            } else if (userId != event[0].organizerId) {
+            } else if (userId != event[0].organizer_id) {
                 res.status(403)
                     .send("You are not the organizer of this event");
             } else {
 
                 const possibleAttendee = await eventsAttendees.checkAttendee(eventId, userId);
 
+                console.log(event);
+
                 if (possibleAttendee.length == 0) {
                     res.status(404)
                         .send("Can't update user who is not attending");
                 } else {
+                    let intStatus;
+                    if (status == "accepted") {
+                        intStatus = 1;
+                    } else if (status == "pending") {
+                        intStatus = 2;
+                    } else if (status == "rejected") {
+                    intStatus = 3;
+                    }
 
-                    await eventsAttendees.updateAttendee(status, eventId, userId);
+                    await eventsAttendees.updateAttendee(intStatus, eventId, userId);
                     res.status( 200 )
                         .send();
                 }

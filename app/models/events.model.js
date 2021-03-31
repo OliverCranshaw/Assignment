@@ -6,9 +6,9 @@ exports.getAllEvents = async function(sortBy) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees" \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
-        join event_attendees EA on E.id = EA.event_id \
+        join event_attendees EA \
         group by E.id order by ' + sortBy
 
     const [rows] = await conn.query(query);
@@ -21,6 +21,8 @@ exports.getAllEvents = async function(sortBy) {
 
 };
 
+exports.get
+
 exports.getQuery = async function(sortBy, search) {
 
     search = '%' + search + '%';
@@ -29,7 +31,7 @@ exports.getQuery = async function(sortBy, search) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees" \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
         where (title like ? or description like ?) group by E.id order by ' + sortBy
@@ -50,7 +52,7 @@ exports.getCatId = async function(sortBy, catList) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees" \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
         where category_id in (?) group by E.id order by ' + sortBy
@@ -71,7 +73,7 @@ exports.getOrdId = async function(sortBy, ordId) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees" \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
         where organizer_id = ? group by E.id order by ' + sortBy
@@ -94,7 +96,7 @@ exports.getQueryCat = async function(sortBy, search, catList) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees" \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
         where (title like ? or description like ?) and category_id in (?) group by E.id order by ' + sortBy
@@ -117,7 +119,7 @@ exports.getQueryOrg = async function(sortBy, search, orgId) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees" \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
         where (title like ? or description like ?) and organizer_id = ? group by E.id order by ' + sortBy
@@ -138,7 +140,7 @@ exports.getCatOrg = async function(sortBy, catList, orgId) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees" \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
         where category_id in (?) and organizer_id = ? group by E.id order by ' + sortBy
@@ -161,7 +163,7 @@ exports.getQueryCatOrg = async function(sortBy, search, catList, orgId) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees" \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
         where (title like ? or description like ?) and category_id in (?) and organizer_id = ? \
@@ -230,7 +232,7 @@ exports.getEvent = async function( eventId ) {
     const conn = await db.getPool().getConnection();
     const query =
         'select E.id as "eventId", title, group_concat(distinct category_id) as "categories", first_name as "organizerFirstName", \
-        last_name as "organizerLastName", capacity, count(distinct EA.user_id) as "numAcceptedAttendees", capacity, description, \
+        last_name as "organizerLastName", capacity, count(distinct case when (EA.attendance_status_id = 1 and E.id = EA.event_id) then user_id else null end) as "numAcceptedAttendees", description, \
         organizer_id as organizerId, date, is_online as isOnline, url, venue, requires_attendance_control as requiresAttendanceControl, fee \
         from event E join event_category EC on E.id = EC.event_id join user U on E.organizer_id = U.id \
         join event_attendees EA on E.id = EA.event_id \
